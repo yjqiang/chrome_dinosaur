@@ -14,7 +14,7 @@ class MyScene (scene.Scene):
         # self.dino.position = (self.size.w / 15, self.size.h * 0.1)
         
         self.dino = Dino(self.size)
-        self.dino_node = scene.SpriteNode(self.dino.texture)
+        self.dino_node = scene.SpriteNode(self.dino.texture, z_position=2)
         # 这个sb中心点是坐标
         self.dino_node.position = self.dino.coord
         self.add_child(self.dino_node)
