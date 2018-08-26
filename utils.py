@@ -5,22 +5,28 @@ import ui
 from scene import Texture
 
 
-def pil2ui(pil_img):
-    with io.BytesIO() as buffer:
-        pil_img.save(buffer, format='PNG')
-        return ui.Image.from_data(buffer.getvalue())
+def pil2texture(pil_imgs):
+    texture_imgs = []
+    for pil_img in pil_imgs:
+        with io.BytesIO() as buffer:
+            pil_img.save(buffer, format='PNG')
+            texture_img = Texture(ui.Image.from_data(buffer.getvalue()))
+            img_size = texture_img.size
+            texture_imgs.append((texture_img, img_size))
+    return texture_imgs
 
-                
-def load_sprite_sheet(sheet_name, nx, ny, scale_x=-1, scale_y=-1):
+
+def load_sprite_sheet(sheet_name, nx, ny, scale_x=-1, scale_y=-1, list_wanted=None):
+    # 第一个代码起始index，第二个是长度,只支持横着粘连且ny为1
+    # list_wanted = [(0, 1), (0, 2), (2, 1), (2, 2), (3, 3)]
     img_path = os.path.join('sprites', sheet_name)
     img = Image.open(img_path)
     size_x, size_y = img.size
-    # print(size_x, size_y)
     
     sub_size_x = int(size_x / nx)
     sub_size_y = int(size_y / ny)
     # img.transform((100, 100), Image.EXTENT, (0, 0, 100, 90)).show()
-    sprites = []
+    sub_imgs = []
     for i in range(nx):
         for j in range(ny):
             img_coord = (i*sub_size_x, j*sub_size_y, (i+1)*sub_size_x, (j+1)*sub_size_y)
@@ -28,12 +34,25 @@ def load_sprite_sheet(sheet_name, nx, ny, scale_x=-1, scale_y=-1):
                 sub_img = img.transform((scale_x, scale_y), Image.EXTENT, img_coord)
             else:
                 sub_img = img.transform((sub_size_x, sub_size_y), Image.EXTENT, img_coord)
-            # print(sub_img.size)
             # sub_img.show()
-            sub_img = Texture(pil2ui(sub_img))
-            sub_img_size = sub_img.size
-            
-            sprites.append((sub_img, sub_img_size))
-            # sub_img.save(f'{i}.png')
-    return sprites
+            sub_imgs.append(sub_img)
+        
+    if list_wanted is None:
+        textures = pil2texture(sub_imgs)
+        return textures
     
+    combine_imgs = []
+    for i, length in list_wanted:
+        new_image = Image.new('RGBA', (sub_size_x * length, sub_size_y))
+        for add_i in range(length):
+            coord = (add_i * sub_size_x, 0, sub_size_y, (add_i + 1) * sub_size_x)
+            coord = (add_i * sub_size_x, 0)
+            new_image.paste(sub_imgs[i + add_i], coord)
+        # new_image.show()
+        combine_imgs.append(new_image)
+
+    return pil2texture(combine_imgs)
+             
+    
+# load_sprite_sheet('cacti-small.png', 6, 1)
+# load_sprite_sheet('dino.png', 5, 1)
