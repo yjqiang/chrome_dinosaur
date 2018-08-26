@@ -17,14 +17,14 @@ class Dino():
         self.list_dinos = list_running_dinos + list_ducking_dinos
                 
         self.index = 0
-        self.left_buttom_coord = scene.Size(0, 0)
+        self.left_buttom_coord = scene.Size(10, 10)
         self.update_img()
                 
         self.speed = [0, 0]
                 
     def check_bound(self):
-        if self.left_buttom_coord.y < 0:
-            self.left_buttom_coord.y = 0
+        if self.left_buttom_coord.y < 10:
+            self.left_buttom_coord.y = 10
             self.is_jumping = False
             
     def start_jump(self):
@@ -45,7 +45,7 @@ class Dino():
     # 随index和左下端坐标改变texture、坐标等
     def update_img(self):
         self.texture, self.scale = self.list_dinos[self.index]
-        self.coord = self.scale / 2 + self.left_buttom_coord + (10, 10)
+        self.coord = self.scale / 2 + self.left_buttom_coord
     
     def update(self):
         self.counter += 1

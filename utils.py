@@ -32,12 +32,28 @@ def load_sprite_sheet(sheet_name, nx, ny, scale_x=-1, scale_y=-1, list_wanted=No
         scale_y = sub_size_y
     # img.transform((100, 100), Image.EXTENT, (0, 0, 100, 90)).show()
     sub_imgs = []
-    for i in range(nx):
-        for j in range(ny):
-            img_coord = (i*sub_size_x, j*sub_size_y, (i+1)*sub_size_x, (j+1)*sub_size_y)
-            sub_img = img.transform((scale_x, scale_y), Image.EXTENT, img_coord)
-            # sub_img.show()
-            sub_imgs.append(sub_img)
+    if sheet_name == 'cloud.png':
+        for i in range(nx):
+            for j in range(ny):
+                img_coord = (i*sub_size_x, j*sub_size_y, (i+1)*sub_size_x, (j+1)*sub_size_y)
+                sub_img = img.transform((scale_x, scale_y), Image.EXTENT, img_coord)
+                # sub_img = sub_img.convert('RGB')
+
+                split_img = sub_img.split()
+                split_imgr = split_img[0].point(lambda x: 128 if x == 255 else 0)
+                split_imgg = split_img[1].point(lambda x: 128 if x == 255 else 0)
+                split_imgb = split_img[2].point(lambda x: 128 if x == 255 else 0)
+                
+                sub_img = Image.merge(sub_img.mode, [split_imgr, split_imgg, split_imgb, split_img[3]])    
+                sub_imgs.append(sub_img)
+    else:
+        for i in range(nx):
+            for j in range(ny):
+                img_coord = (i*sub_size_x, j*sub_size_y, (i+1)*sub_size_x, (j+1)*sub_size_y)
+                sub_img = img.transform((scale_x, scale_y), Image.EXTENT, img_coord)
+                # sub_img = sub_img.convert('RGB')
+                # sub_img.show()
+                sub_imgs.append(sub_img)
         
     if list_wanted is None:
         textures = pil2texture(sub_imgs)

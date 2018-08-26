@@ -13,6 +13,8 @@ class Cactuses():
     def check_collision(self, position, size):
         for cactus in self.cactuses:
             if (scene.Rect(*position, *size)).intersects(scene.Rect(*cactus.left_buttom_coord, *cactus.scale)):
+                # print(scene.Rect(*position, *size))
+                # print(scene.Rect(*cactus.left_buttom_coord, *cactus.scale))
                 return True
         return False
     

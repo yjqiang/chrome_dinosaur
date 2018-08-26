@@ -54,7 +54,6 @@ class MyScene (scene.Scene):
         
     def check_collision(self):
         if self.cactuses.check_collision(self.dino.left_buttom_coord, self.dino.scale):
-            # print('dead')
             self.dino.is_dead = True
             self.paused = True
 
