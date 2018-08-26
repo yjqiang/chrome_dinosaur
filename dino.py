@@ -36,9 +36,11 @@ class Dino():
     def start_duck(self):
         if not self.is_jumping:
             self.is_ducking = True
+            self.index = 5
             
     def end_duck(self):
         self.is_ducking = False
+        self.index = 2
     
     # 随index和左下端坐标改变texture、坐标等
     def update_img(self):

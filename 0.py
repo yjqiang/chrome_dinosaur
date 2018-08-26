@@ -2,11 +2,12 @@ import scene
 from dino import Dino
 from ground import Ground
 from cloud import Cloud
+from cactus import Cactuses
 
 
 class MyScene (scene.Scene):
     def setup(self):
-        self.background_color = 'grey'
+        self.background_color = 'white'
         
         # self.dino.position.x = (self.size.w / 1)
         # self.dino.position.y = (self.size.h * 0.98)
@@ -43,6 +44,19 @@ class MyScene (scene.Scene):
         self.add_child(self.cloud2_node)
         self.add_child(self.cloud3_node)
         
+        self.cactuses = Cactuses(self.size.x)
+        self.cactuses_nodes = []
+        for texture, coord in zip(self.cactuses.textures, self.cactuses.coords):
+            cactus_node = scene.SpriteNode(texture, position=coord)
+            self.cactuses_nodes.append(cactus_node)
+        for cactus_node in self.cactuses_nodes:
+            self.add_child(cactus_node)
+        
+    def check_collision(self):
+        if self.cactuses.check_collision(self.dino.left_buttom_coord, self.dino.scale):
+            # print('dead')
+            self.dino.is_dead = True
+            self.paused = True
 
     def update(self):
         self.dino_node.texture, self.dino_node.position = self.dino.update()
@@ -72,7 +86,12 @@ class MyScene (scene.Scene):
                 self.cloud2.init()
             elif tag3_new_self:
                 self.cloud3.init()
-              
+                
+        for cactus_node, coord in zip(self.cactuses_nodes, self.cactuses.update()):
+            cactus_node.position = coord
+        
+        self.check_collision()
+            
     def touch_began(self, touch):
         middle_x = self.size.x / 2
         if touch.location.x < middle_x:
