@@ -5,8 +5,9 @@ import scene
 gravity = 0.6
 
 
-class Dino():
-    def __init__(self, scene_size):
+class Dino(scene.SpriteNode):
+    def __init__(self):
+        self.z_position = 2
         self.is_jumping = False
         self.is_ducking = False
         self.is_blinking = False
@@ -17,10 +18,10 @@ class Dino():
         self.list_dinos = list_running_dinos + list_ducking_dinos
                 
         self.index = 0
-        self.left_buttom_coord = scene.Size(10, 10)
+        self.left_buttom_coord = scene.Point(10, 10)
         self.update_img()
                 
-        self.speed = [0, 0]
+        self.velocity = [0, 0]
                 
     def check_bound(self):
         if self.left_buttom_coord.y < 10:
@@ -31,7 +32,7 @@ class Dino():
         if not self.is_jumping:
             self.is_jumping = True
             self.is_blinking = False
-            self.speed[1] = 10
+            self.velocity[1] = 10
             
     def start_duck(self):
         if not self.is_jumping:
@@ -44,13 +45,13 @@ class Dino():
     
     # 随index和左下端坐标改变texture、坐标等
     def update_img(self):
-        self.texture, self.scale = self.list_dinos[self.index]
-        self.coord = self.scale / 2 + self.left_buttom_coord
+        self.texture, self.size = self.list_dinos[self.index]
+        self.position = self.size / 2 + self.left_buttom_coord
     
     def update(self):
         self.counter += 1
         if self.is_jumping:
-            self.speed[1] -= gravity
+            self.velocity[1] -= gravity
             
         if self.is_jumping:
             self.index = 0
@@ -70,11 +71,9 @@ class Dino():
         if self.is_dead:
             self.index = 4
         
-        self.left_buttom_coord += (self.speed[0] * 1.5, self.speed[1] * 1.5)
+        self.left_buttom_coord += (self.velocity[0] * 1.5, self.velocity[1] * 1.5)
         self.check_bound()
         self.update_img()
-        
-        return self.texture, self.coord
     
 
             
