@@ -1,6 +1,38 @@
 import scene
 import random
+import utils
     
+    
+class Cactuses(scene.Node):
+    def __init__(self, scene_size_x):
+        self.position = scene.Point(0, 0)
+        self.velocity = -5
+        sprites = utils.load_sprite_sheet('cacti-small.png', 6, 1, 17, 35, [(0, 1), (0, 2), (3, 1), (2, 2), (2, 3)])
+        position = scene.Point(-100, 0)
+        cactuses = [Cactus(texture, size, position, scene_size_x) for texture, size in sprites]
+        for cactus in cactuses:
+            self.add_child(cactus)
+        
+    def check_collision(self, position, size):
+        dino_rect = scene.Rect(*(position - self.position), *size)
+        for cactus in self.children:
+            cactus_rect = scene.Rect(*(cactus.left_buttom_coord), *cactus.size)
+            if dino_rect.intersects(cactus_rect):
+                return True
+        return False
+    
+    def update(self):
+        self.position += (self.velocity, 0)
+        # if all((cactus.check_new() for cactus in self.children)):
+        for cactus in self.children:
+            if not cactus.check_new(self.position.x):
+                break
+        else:
+            for cactus in random.sample(self.children, 5):
+                if cactus.check_new_self(self.position.x):
+                    cactus.reset(self.position.x)
+                    break
+                        
 
 class Cactus(scene.SpriteNode):
     def __init__(self, texture, size, position, scene_size_x):

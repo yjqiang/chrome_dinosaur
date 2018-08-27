@@ -1,6 +1,11 @@
 import scene
 from dino import Dino
-from background import Grounds, Clouds, Cactuses
+from cactus import Cactuses
+from cloud import Clouds
+from ground import Grounds
+from score_board import ScoreBoards
+
+
 
 
 class MyScene (scene.Scene):
@@ -20,6 +25,9 @@ class MyScene (scene.Scene):
         self.cactuses = Cactuses(self.size.x)
         self.add_child(self.cactuses)
         
+        self.score_boards = ScoreBoards()
+        self.add_child(self.score_boards)
+        
         self.middle_x = self.size.x / 2
         
     def check_collision(self):
@@ -33,6 +41,7 @@ class MyScene (scene.Scene):
         self.grounds.update()
         self.clouds.update()
         self.cactuses.update()
+        self.score_boards.update()
         
         self.check_collision()
             

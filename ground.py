@@ -1,4 +1,21 @@
 import scene
+import utils
+
+
+class Grounds(scene.Node):
+    def __init__(self, speed=-5):
+        texture, size = utils.load_sprite_sheet('ground.png', 1, 1)[0]
+        self.ground0 = Ground(texture, size, scene.Point(0, 0))
+        self.ground1 = Ground(texture, size, scene.Point(size.x, 0))
+        self.add_child(self.ground0)
+        self.add_child(self.ground1)
+        self.position = scene.Point(0, 0)
+        self.velocity = speed
+
+    def update(self):
+        self.position += (self.velocity, 0)
+        self.ground0.update(self.position.x)
+        self.ground1.update(self.position.x)
 
 
 class Ground(scene.SpriteNode):
